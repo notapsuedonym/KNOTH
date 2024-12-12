@@ -9,8 +9,8 @@ a mostly stack-based language that is
 	reverse polish notation
 
     4 4 + 2 *                   ; -> 16
-    ("else"#)
-    ("then"#)
+    (else#)
+    (then#)
     (0) if                      ; -> "then" -> STDOUT
 
 	neet terse functions
@@ -32,7 +32,7 @@ a mostly stack-based language that is
     (
       ()
       (2 *)
-      (. even🝢) if
+      (. even🝢) ☯
     ) myFn@
 
     4 myFn🝢 #  ; => 8
@@ -46,6 +46,13 @@ a mostly stack-based language that is
     ((o r,!j)⚝:!,ld,w!j)⚝
     ((, )((llo)(He))⚝!j)⚝
     #
+
+  in summary
+
+    ((,~,% gcd🝢) (⁐) (.0 =) ☯) gcd@
+    27 9  gcd🝢# ; => 9
+    18 12 gcd🝢# ; => 6
+    15 30 gcd🝢# ; => 15
 
   (bad notes)
     - fix the formatter
@@ -109,6 +116,12 @@ def e(prog, stack=[], words={})
         when ","
           thing1 = stack.pop
           thing2 = stack.pop
+          stack.push thing1
+          stack.push thing2
+        when "~"
+          thing1 = stack.pop
+          thing2 = stack.pop
+          stack.push thing2
           stack.push thing1
           stack.push thing2
         when ";"
@@ -280,6 +293,49 @@ end
 
 #e('(1 2 =) (1 1 =) ||')
 
+gcd = fmt('''
+
+; ((gcd🝢) () (0 =) if) gcd@
+; ((⁐ , ~, % gcd🝢) () (0 =) if) gcd@
+
+((,~,% gcd🝢) (⁐) (.0 =) ☯) gcd@
+
+27 9  gcd🝢# ; => 9
+18 12 gcd🝢# ; => 6
+15 30 gcd🝢# ; => 15
+
+''')
+
+=begin
+[b, a]
+
+gcd(9, 27) == 9
+[b=]
+(
+  (⁐ [27, 9]
+  ,   [9, 27]
+  ~,  [9, 9, 27]
+  %   [9, 9]
+  gcd🝢 [9, 9])
+  ()
+  (.0 =)    1: [27, 9, false]
+  if
+) gcd@
+
+corrected;
+
+(
+  (,   [9, 27]
+  ~,  [9, 9, 27]
+  %   [9, 9]
+  gcd🝢 [9, 9])
+  (⁐) [9]
+  (.0 =)    1: [27, 9]
+  if
+) gcd@
+=end
+
+=begin
 prog = fmt('''
 
 (. 2 =, 2, % 0 = ||) even@
@@ -288,6 +344,7 @@ prog = fmt('''
 4 myFn fn
 
 ''')
+=end
 
 =begin
 prog = '''
