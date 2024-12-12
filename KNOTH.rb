@@ -63,9 +63,9 @@ a mostly stack-based language that is
 
 def special(t)
   (
-    begin((t.peek).match(/[!|?|+|-|*|%|,|(|)|@|#|☯|⁐|🝠|🜁|⚝|ф|🝢| |\n|\0]/)) != nil
+    begin((t.peek).match(/[!|?|+|-|*|%|.|,|$|(|)|@|#|☯|⁐|🝠|🜁|⚝|ф|🝢| |\n|\0]/)) != nil
     rescue
-      (t.to_s.match(/[!|?|+|-|*|%|,|(|)|@|#|☯|⁐|🝠|🜁|⚝|ф|🝢| |\n|\0]/)) != nil
+      (t.to_s.match(/[!|?|+|-|*|%|.|,|$|(|)|@|#|☯|⁐|🝠|🜁|⚝|ф|🝢| |\n|\0]/)) != nil
     end
   )
 end
@@ -135,6 +135,7 @@ def e(prog, stack=[], words={})
           stack.push(stack.pop != stack.pop) if m == "="
           stack.push((stack.pop).ord) if m == "o"
           stack.push((stack.pop).chr) if m == "c"
+          sleep(stack.pop.to_i)       if m == "s"
           if m == "j"
             mj = []
             while stack.length != 0 do
@@ -206,18 +207,36 @@ def e(prog, stack=[], words={})
           else
             e(block2, stack, words)
           end
+        when "♲"
+          # while loop
+          # executes the body while its condition is true
+          # form ->
+          #  <block> <condition> ♲
+          cond = stack.pop
+          block = stack.pop
+          while e(cond, stack, words) != true
+            e(block, stack, words)
+          end
+        when "⁘"
+          # each loop
+          # executes a block on each element of an iterable
+          # the iterable needs to support .each
+          # form ->
+          #  <block> <iterable> ⁘
+          iter = stack.pop
+          block = stack.pop
+          iter.each do |el|
+            stack.push el
+            e(block, stack, words)
+          end
         when "⁐"
           stack.pop
         when '$'
-          strblt = ""
-          pn.next
-          strParsing = [true, 'unmatched "']
-          while pn.peek != '"' do
-            strblt += pn.next
-          end
-          strParsing = [false, ""]
-          pn.next
-          stack.push strblt
+          # no longer for strings (obsolete)
+          # now for special literal values
+          value = stack.pop
+          stack.push(true)  if value == "true"
+          stack.push(false) if value == "false"
         when '('
           strblt = ""
           depth = 1
@@ -239,8 +258,12 @@ def e(prog, stack=[], words={})
           rs = stack.reduce { |uwu, owo|
             e(op, [uwu, owo], words) .pop
           }
-          stack = []
+          (0...stack.length).each do stack.pop end
           stack.push rs
+        when "‿"
+          start = stack.pop
+          nd = stack.pop
+          stack.push (start..nd)
         when "?"
           p stack
         when "#"
@@ -274,7 +297,9 @@ def fmt(s)
     6 => [/pop/, "⁐"],
     7 => [/⚞/, "("],
     8 => [/⚟/, ")"],
-    9 => [/if/, "☯"]
+    9 => [/if/, "☯"],
+    10 => [/range/, "‿"],
+    11 => [/while/, "♲"]
   }
   recognized.each do |rgx|
     rg = rgx[1]
@@ -290,6 +315,8 @@ def repl()
     p e(fmt(m))
   end
 end
+
+# e '(#) 10 1 ‿ ⁘'
 
 #e('(1 2 =) (1 1 =) ||')
 

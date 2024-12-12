@@ -1,0 +1,105 @@
+python;
+    print("Hello, World!")
+
+KNOTH;
+    ("Hello, world!")#
+
+
+python;
+    a = 5
+    b = 3
+    sum = a + b
+    print(sum)
+
+KNOTH;
+    one line;
+        5 a@3 b@bфaф+sum@sumф#
+    expanded;
+        5 a@
+        3 b@
+        bф aф + sum@
+        sumф#
+
+
+python;
+    def factorial(n):
+        if n == 0:
+            return 1
+        else:
+            return n * factorial(n - 1)
+
+    print(factorial(5))
+
+KNOTH;
+    one line;
+        (( . 1 , - factorial🝢) (⁐:*🜁) ( . 0 =) ☯) factorial@
+    expanded;
+        (
+            ( . 1 , - factorial🝢)
+            (⁐:*🜁)
+            ( . 0 =)☯
+        ) factorial@
+
+    5 factorial🝢 #  ; -> 120
+
+
+python;
+    def is_prime(n):
+        if n <= 1:
+            return False
+        for i in range(2, int(n**0.5) + 1):
+            if n % i == 0:
+                return False
+        return True
+
+KNOTH;
+    one line;
+        ((.(()()(~%.)☯),2 ‿⁘:*🜁 0!=)(false$)(. 1, <=)☯) is_prime@
+    expanded;
+        (
+            (
+                .(
+                    ()()(~%.)☯
+                )
+                ,2 ‿⁘
+                :*🜁
+                0!=
+            )
+            (false$)
+            (. 1, <=)☯
+        ) is_prime@
+    extra;
+        (is_prime🝢 true$ ||) is_even@
+
+    4 is_prime🝢 # ; -> false
+    4 is_even🝢  # ; -> true
+    3 is_prime🝢 # ; -> true
+
+
+python;
+    def fibonacci(n):
+        if n <= 0:
+            return 0
+        elif n == 1:
+            return 1
+        else:
+            return fibonacci(n - 1) + fibonacci(n - 2)
+
+KNOTH;
+    one line;
+        (()(0)(.0,<=)☯()(1)(.1,=)☯(⁐)(1 ~0,(⁐~,+,),1 +2 ‿⁘)(.0!=.1!=||)☯,⁐,⁐) fib@
+    expanded;
+        (
+            () (0) (. 0, <=)☯
+            () (1) (. 1, =)☯
+            (⁐) (
+                1 ~ 0,
+                (
+                    ⁐
+                    ~,+,
+                ) , 1 + 2 ‿ ⁘
+            ) (. 0 != . 1 != ||)☯
+            ,⁐,⁐
+        ) fib@
+
+    10 fib🝢#  ; -> 55
