@@ -1,2 +1,4 @@
 # KNOTH
-odd language i randomly started making a few days ago
+
+KNOTH is a language i don't like the full-name form of anymore
+it's weird
