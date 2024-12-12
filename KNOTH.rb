@@ -8,7 +8,7 @@ a mostly stack-based language that is
 
 	reverse polish notation
 
-	  4 4 + 2 *                   ; -> 16
+    4 4 + 2 *                   ; -> 16
     ("else"#)
     ("then"#)
     (0) if                      ; -> "then" -> STDOUT
