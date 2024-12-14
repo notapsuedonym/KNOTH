@@ -179,7 +179,7 @@ def e(prog, stack=[], words={})
           words[value] = word
         when "ф"
           word = stack.pop
-          if words[word]
+          if words[word] != nil
             stack.push words[word]
           end
         when "🝢"
@@ -224,6 +224,7 @@ def e(prog, stack=[], words={})
           # form ->
           #  <block> <iterable> ⁘
           iter = stack.pop
+          iter = iter.split('') if iter.class == String
           block = stack.pop
           iter.each do |el|
             stack.push el
@@ -237,6 +238,7 @@ def e(prog, stack=[], words={})
           value = stack.pop
           stack.push(true)  if value == "true"
           stack.push(false) if value == "false"
+          stack.push(nil)   if value == "nil"
         when '('
           strblt = ""
           depth = 1
@@ -260,6 +262,38 @@ def e(prog, stack=[], words={})
           }
           (0...stack.length).each do stack.pop end
           stack.push rs
+        when "🝠"
+          by = stack.pop
+          str = stack.pop
+          stack.push (str.split(by))
+        when "⊞"
+          block = stack.pop
+          nscop = []
+          stack.each do |s| nscop << s end
+          stack.push (e(block, nscop, words))
+        when "⊡"
+          block = stack.pop
+          stack.push (e(block, [], words))
+        when "🞇"
+          # parallel operator
+          # performs the same block with an element from the same position in every enumerable on the stack
+          offset = 0
+          results = []
+          block = stack.pop
+          enums = []
+          stack.each do |e| enums << e end
+          (0...stack.length).each do stack.pop end
+          enums[0].each_index do |i|
+            nsta = []
+            enums.each do |e|
+              nsta << e[i]
+            end
+            result = (e(block, nsta, words))
+            result.each do |r|
+              results << r
+            end
+          end
+          stack.push results
         when "‿"
           start = stack.pop
           nd = stack.pop
