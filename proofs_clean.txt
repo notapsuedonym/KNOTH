@@ -69,11 +69,11 @@ KNOTH;
             (. 1, <=)☯
         ) is_prime@
     extra;
-        (is_prime🝢 true$ ||) is_even@
+        (is_prime🝢 true$ ||) is_composite@
 
-    4 is_prime🝢 # ; -> false
-    4 is_even🝢  # ; -> true
-    3 is_prime🝢 # ; -> true
+    4 is_prime🝢     # ; -> false
+    4 is_composite🝢 # ; -> true
+    3 is_prime🝢     # ; -> true
 
 
 python;
